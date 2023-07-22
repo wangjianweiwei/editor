@@ -3,21 +3,22 @@ import {io} from "socket.io-client";
 class Connection {
     constructor(uri) {
         this.seq = 0
+        this.doc = null
         this.canSend = true
         this.connection = io(uri, {transports: ["websocket"]})
-        this.id = this.connection.id
+
+    }
+
+    addListener(event, cb) {
+        this.connection.on(event, cb)
     }
 
     sendOp(doc, delta) {
-        let op = {
-            src: this.id,
-            seq: this.seq++,
-            op: delta,
-            v: doc.version,
-            sentAt: Date.now()
+        if (this.connection.connected) {
+            delta.src = this.connection.id
+            delta.seq = this.seq++
+            this.send("compose", delta)
         }
-
-        this.send("op", op)
     }
 
     send(event, data) {
