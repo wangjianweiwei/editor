@@ -1,11 +1,11 @@
 import {io} from "socket.io-client";
 
 class Connection {
-    constructor(uri) {
+    constructor(server, path, query) {
         this.seq = 0
         this.doc = null
         this.canSend = true
-        this.connection = io(uri, {transports: ["websocket"]})
+        this.connection = io(server, {transports: ["websocket"], path: path, query})
 
     }
 

@@ -4,6 +4,8 @@ import {useRouter} from 'vue-router'
 import Quill from "quill/dist/quill.js";
 import 'quill/dist/quill.snow.css'
 import Doc from "../core/doc.js";
+import Connection from "../core/connection.js";
+import {config} from "../config/index.js";
 
 const router = useRouter()
 let editor = null
@@ -14,7 +16,8 @@ const options = {theme: 'snow'};
 
 onMounted(() => {
   editor = new Quill('#editor', options);
-  doc = new Doc(doc_id, editor)
+  const connection = new Connection(config.WEBSOCKET_SERVER, '/socket.io', {doc: doc_id})
+  doc = new Doc(doc_id, editor, connection)
   doc.subscribe(() => {
     editor.setContents(doc.snapshot)
   })

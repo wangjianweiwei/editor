@@ -1,23 +1,21 @@
 import Quill from "quill";
-import Connection from "../core/connection.js";
 import {transformX} from "./ot.js";
 
 const Delta = Quill.import('delta');
 
 class Doc {
-    constructor(id, editor) {
+    constructor(id, editor, connection) {
         this.id = id
         this.editor = editor
         this.v = null
         this.snapshot = []
-        this.connection = new Connection(`http://192.168.2.102:8000?doc=${id}`)
+        this.connection = connection
         this.inflightOp = null
         this.pendingOps = []
         this.composeDebounceTimer = null
         this.currentDelta = new Delta()
-        this.connection.doc = this
-        this.addListeners()
         this.subscribe_cb = null
+        this.addListeners()
     }
 
     addListeners() {
